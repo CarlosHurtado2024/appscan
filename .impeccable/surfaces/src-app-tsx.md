@@ -25,6 +25,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 Signature interaction: pressing Escanear prints a brief guilloche sweep across the band, then the camera opens. Motion is otherwise 150 to 250 ms state feedback only.
 
-Serial face: Courier Prime, a typewriter, by decision: cheque serials and stubs in this audience were commonly typed, and no numbering-machine face with Spanish coverage was on hand. Watermark: only on the empty library, where no text or stub reaches it.
+Serial face: Courier Prime, a typewriter, as a design decision: it separates the serial from the interface text. Watermark: only on the empty library and only on screens at least 820 px tall, where no text or stub reaches it.
 
 Color strategy: Restrained. Scene: indoors at a table in mixed light, so the theme follows the system setting; the camera is always dark.

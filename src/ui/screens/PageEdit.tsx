@@ -60,7 +60,7 @@ export function PageEditScreen({ id }: { id: string }) {
       <header className="toolbar">
         <Guilloche />
         <a className="icon-btn" href={`#/doc/${page.docId}`} aria-label="Volver"><Icon name="back" /></a>
-        <h1 className="toolbar__title">Página {number}</h1>
+        <h1 className="toolbar__title">Página <span className="toolbar__number">{number}</span></h1>
       </header>
 
       <main className="screen__body page-edit">

@@ -95,7 +95,7 @@ input { font: inherit; color: inherit; caret-color: var(--primary); }
 .toolbar > :not(.guilloche) { position: relative; }
 .toolbar { overflow: hidden; position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); padding-top: calc(var(--space-1) + env(safe-area-inset-top)); background: var(--paper-sunk); border-bottom: 1px solid var(--rule); }
 .toolbar__title { flex: 1; font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; padding-inline: var(--space-2); }
-.title-input { flex: 1; min-width: 0; min-height: var(--tap); background: transparent; border: 0; border-radius: var(--radius); padding-inline: var(--space-2); font-size: 1.0625rem; font-weight: 650; text-overflow: ellipsis; }
+.title-input { flex: 1; min-width: 0; min-height: var(--tap); background: transparent; border: 0; border-radius: var(--radius); padding-inline: var(--space-2); font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; text-overflow: ellipsis; }
 .title-input:focus { background: var(--paper-raised); outline: 2px solid var(--focus); }
 
 /* Controls */
@@ -279,3 +279,7 @@ input[type='checkbox']:checked::after { content: ''; width: 6px; height: 12px; m
   .stub:hover:not(.stub--blank) { border-color: var(--ink-soft); }
   .segmented label:hover input:not(:checked) + span { background: var(--paper-sunk); }
 }
+
+.toolbar__number { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
+/* On short screens the watermark would reach the empty state's text. */
+@media (max-height: 819px) { .rosette { display: none; } }
