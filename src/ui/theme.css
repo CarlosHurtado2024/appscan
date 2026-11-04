@@ -242,3 +242,11 @@ input { font: inherit; color: inherit; caret-color: var(--primary); }
 .merge-row__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
 
 .banner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-4); padding-top: calc(var(--space-2) + env(safe-area-inset-top)); background: var(--paper-raised); border-bottom: 1px solid var(--rule); }
+
+/* Visual review fixes */
+.page-tile > a { overflow: hidden; }
+.page-tile img { max-height: 184px; }
+.annotate-body:has(.tool-panel) .annotate-stage img { max-height: 32dvh; }
+.masthead__action { min-height: var(--tap); }
+.camera__adjust { position: relative; z-index: 1; align-self: center; margin-top: auto; margin-bottom: var(--space-2); }
+.camera__adjust + .camera__bottom { margin-top: 0; }

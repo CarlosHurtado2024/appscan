@@ -17,6 +17,7 @@ export function ScanScreen({ docId, mode }: Props) {
   const quad = useLiveDetection(videoRef, status === 'ready');
   const [doc, setDoc] = useState<Doc | null>(null);
   const [count, setCount] = useState(0);
+  const [lastPageId, setLastPageId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const toast = useToast();
   const gallery = useRef<HTMLInputElement>(null);
@@ -44,7 +45,7 @@ export function ScanScreen({ docId, mode }: Props) {
       // Saved right away: closing the app afterwards never loses this page.
       const photo = await capture();
       const target = await ensureDoc();
-      await savePhoto(photo, target.id);
+      setLastPageId((await savePhoto(photo, target.id)).id);
       const total = count + 1;
       setCount(total);
       if (isId && total === ID_STEPS.length) navigate(`/doc/${target.id}`, { replace: true });
@@ -104,6 +105,10 @@ export function ScanScreen({ docId, mode }: Props) {
             <input data-testid="system-camera-input" type="file" accept="image/*" capture="environment" hidden onChange={(e) => onPickedFiles(e.target.files)} />
           </label>
         </div>
+      )}
+
+      {lastPageId && !isId && !blocked && (
+        <a className="btn btn--small camera__adjust" href={`#/crop/${lastPageId}`}><Icon name="crop" size={20} /> Ajustar recorte</a>
       )}
 
       <footer className="camera__bottom">

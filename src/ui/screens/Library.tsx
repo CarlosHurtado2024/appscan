@@ -6,7 +6,10 @@ import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
 import { InstallHint } from '../components/InstallHint';
+import { navigate } from '../router';
 
+/** The line work prints across the band, then the camera opens. */
+const SWEEP_MS = 240;
 const NOTICE_KEY = 'appscan.backupNoticeDismissed';
 
 function readNoticeDismissed() {
@@ -57,6 +60,7 @@ export function LibraryScreen() {
   const [docs, setDocs] = useState<Doc[] | null>(null);
   const [query, setQuery] = useState('');
   const [noticeDismissed, setNoticeDismissed] = useState(readNoticeDismissed);
+  const [sweeping, setSweeping] = useState(false);
 
   useEffect(() => {
     listDocs().then(setDocs);
@@ -68,10 +72,10 @@ export function LibraryScreen() {
   return (
     <div className="screen">
       <header className="masthead">
-        <Guilloche />
+        <Guilloche active={sweeping} />
         <div className="masthead__row">
           <h1 className="wordmark">AppScan</h1>
-          <a className="icon-btn" href="#/merge" aria-label="Unir documentos"><Icon name="merge" /></a>
+          <a className="btn btn--small masthead__action" href="#/merge" aria-label="Unir documentos">Unir</a>
         </div>
       </header>
 
@@ -118,7 +122,18 @@ export function LibraryScreen() {
       </main>
 
       <footer className="action-bar">
-        <a className="btn btn--primary btn--wide" href="#/scan"><Icon name="scan" /> Escanear</a>
+        <a
+          className="btn btn--primary btn--wide"
+          href="#/scan"
+          onClick={(e) => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            e.preventDefault();
+            setSweeping(true);
+            window.setTimeout(() => navigate('/scan'), SWEEP_MS);
+          }}
+        >
+          <Icon name="scan" /> Escanear
+        </a>
         <ImportButton className="btn"><Icon name="gallery" /> Importar</ImportButton>
       </footer>
     </div>

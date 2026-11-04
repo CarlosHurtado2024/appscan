@@ -11,7 +11,7 @@ const PATHS = {
   pen: 'M4 20l1-4L16 5l3 3L8 19l-4 1Zm10-13 3 3',
   text: 'M5 6V4h14v2M12 4v16m-3 0h6',
   card: 'M3 6h18v12H3zM7 10h4v4H7zm7 0h4m-4 4h4',
-  merge: 'M6 4v5a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V4M12 12v8m-3-3 3 3 3-3',
+  merge: 'M4 4h7v7H4zM13 13h7v7h-7zM7.5 11v5.5H13M16.5 13V7.5H11',
   close: 'M6 6l12 12M18 6 6 18',
   check: 'M5 12l5 5 9-10',
   undo: 'M9 7 4 12l5 5M4 12h11a5 5 0 0 1 0 10h-3',

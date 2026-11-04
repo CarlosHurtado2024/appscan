@@ -6,3 +6,4 @@ public/ocr/
 test-results/
 playwright-report/
 *.local
+.impeccable/review/

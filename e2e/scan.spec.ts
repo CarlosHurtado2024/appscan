@@ -27,6 +27,13 @@ test('capture creates a page and offers to review it', async ({ page }) => {
   await expect(page.getByTestId('page-tile')).toHaveCount(1);
 });
 
+test('after a capture, its crop can be adjusted right away', async ({ page }) => {
+  await openScan(page);
+  await capture(page);
+  await page.getByRole('link', { name: 'Ajustar recorte' }).click();
+  await page.getByTestId('handle-0').waitFor();
+});
+
 test('multi-page mode adds pages to the same document in order', async ({ page }) => {
   await openScan(page);
   await capture(page);

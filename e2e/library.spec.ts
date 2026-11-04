@@ -12,6 +12,12 @@ test('empty library explains how to start and offers Escanear and Importar', asy
   await expect(page.getByRole('button', { name: 'Importar' })).toBeVisible();
 });
 
+test('Escanear opens the camera after its printed sweep', async ({ page }) => {
+  await page.getByRole('link', { name: 'Escanear', exact: true }).click();
+  await expect(page.locator('.guilloche--active')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Capturar' })).toBeVisible();
+});
+
 test('importing an image creates a document with a thumbnail', async ({ page }) => {
   await importAndOpen(page);
   await backToLibrary(page);
