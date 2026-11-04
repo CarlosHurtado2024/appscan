@@ -11,7 +11,7 @@ export function useBlobUrl(blob: Blob | undefined): string | undefined {
   return url;
 }
 
-export function BlobImage({ blob, alt, className }: { blob: Blob; alt: string; className?: string }) {
+export function BlobImage({ blob, alt, className, testId }: { blob: Blob; alt: string; className?: string; testId?: string }) {
   const url = useBlobUrl(blob);
-  return url ? <img src={url} alt={alt} className={className} /> : <span className={className} />;
+  return url ? <img src={url} alt={alt} className={className} data-testid={testId} /> : <span className={className} />;
 }

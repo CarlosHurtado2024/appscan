@@ -69,7 +69,7 @@ export function CropScreen({ id }: { id: string }) {
   }
 
   return (
-    <div className="screen screen--dark">
+    <div className="screen">
       <header className="toolbar">
         <a className="icon-btn" href={`#/page/${id}`} aria-label="Volver"><Icon name="back" /></a>
         <h1 className="toolbar__title">Recortar</h1>

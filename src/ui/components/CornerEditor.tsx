@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import type { Quad } from '../../core/types';
 
 const LENS_SIZE = 112;
@@ -38,7 +38,7 @@ export function CornerEditor({ src, aspect, quad, valid, onChange }: Props) {
   const rect = stage.current?.getBoundingClientRect();
 
   return (
-    <div className="crop-stage" ref={stage} data-testid="crop-stage" style={{ aspectRatio: aspect }}>
+    <div className="crop-stage" ref={stage} data-testid="crop-stage" style={{ aspectRatio: aspect, '--crop-aspect': aspect } as CSSProperties}>
       <img src={src} alt="Foto original" draggable={false} />
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <polygon className={valid ? 'crop-outline' : 'crop-outline crop-outline--bad'} points={points} vectorEffect="non-scaling-stroke" />

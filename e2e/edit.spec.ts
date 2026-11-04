@@ -84,7 +84,7 @@ test('Volver a detectar restores detected corners', async ({ page }) => {
 test('changing the filter updates the page and survives reload', async ({ page }) => {
   await openPage(page);
   const src = await page.getByTestId('page-preview').getAttribute('src');
-  await page.getByLabel('Blanco y negro').check({ force: true });
+  await page.getByLabel('Blanco y negro').click({ force: true });
   await expect(page.getByTestId('page-preview')).not.toHaveAttribute('src', src!);
   await page.reload();
   await page.getByRole('heading', { name: 'Página 1' }).waitFor();
@@ -121,6 +121,7 @@ test('without OpenCV, cropping stays available and says automatic detection is o
   await openCrop(page);
   await expect(page.getByText('detección automática no está disponible')).toBeVisible();
   await dragHandle(page, 0, 0.2, 0.2);
+  await dragHandle(page, 3, 0.2, 1);
   await page.getByRole('button', { name: 'Aplicar' }).click();
   await page.getByRole('heading', { name: 'Página 1' }).waitFor();
   const [w] = await naturalSize(page);

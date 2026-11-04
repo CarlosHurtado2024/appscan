@@ -157,3 +157,27 @@ input { font: inherit; color: inherit; caret-color: var(--primary); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
 }
+
+/* Page editing */
+.page-edit { gap: var(--space-5); }
+.page-preview { display: grid; place-items: center; min-height: 52dvh; padding: var(--space-3); background: var(--paper-sunk); border: 1px solid var(--rule); border-radius: var(--radius); transition: opacity var(--fast); }
+.page-preview--busy { opacity: 0.55; }
+.page-preview__img { max-height: 60dvh; object-fit: contain; box-shadow: var(--shadow); }
+.action-bar--tools { justify-content: space-around; gap: 0; padding-inline: var(--space-1); }
+.tool { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 56px; min-width: 0; padding: var(--space-1); font: inherit; font-size: 0.8125rem; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-radius: var(--radius); text-decoration: none; cursor: pointer; }
+.tool:active:not(:disabled) { background: var(--paper-sunk); }
+.tool:disabled { opacity: 0.45; }
+.error-text { color: var(--danger); font-weight: 600; }
+
+/* Crop: the photo is the work surface, so everything around it recedes. */
+.crop-body { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-3); padding: var(--space-5) var(--space-5) 112px; }
+.crop-messages { display: flex; flex-direction: column; gap: var(--space-2); width: 100%; max-width: 34rem; }
+.crop-stage { position: relative; width: 100%; max-width: min(100%, calc((100dvh - 240px) * var(--crop-aspect, 0.75))); touch-action: none; user-select: none; background: var(--paper-sunk); }
+.crop-stage img { width: 100%; height: 100%; object-fit: fill; }
+.crop-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.crop-outline { fill: oklch(55% 0.15 275 / 0.16); stroke: oklch(70% 0.17 275); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.crop-outline--bad { fill: oklch(55% 0.18 20 / 0.2); stroke: oklch(62% 0.2 20); }
+.crop-handle { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; padding: 0; background: transparent; border: 0; touch-action: none; cursor: grab; }
+.crop-handle::after { content: ''; position: absolute; inset: 12px; background: var(--paper-raised); border: 3px solid oklch(45% 0.17 275); border-radius: 50%; box-shadow: var(--shadow); }
+.crop-lens { position: absolute; top: 8px; width: 112px; height: 112px; background-repeat: no-repeat; border: 2px solid var(--paper-raised); border-radius: 50%; box-shadow: var(--shadow); pointer-events: none; }
+.crop-lens::after { content: ''; position: absolute; inset: 50% auto auto 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 1px solid oklch(70% 0.17 275); border-radius: 50%; }

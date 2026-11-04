@@ -62,7 +62,7 @@ export function PageEditScreen({ id }: { id: string }) {
 
       <main className="screen__body page-edit">
         <div className={busy ? 'page-preview page-preview--busy' : 'page-preview'} aria-busy={busy}>
-          <BlobImage blob={page.rendered} alt={`Vista previa de la página ${number}`} className="page-preview__img" key={page.rendered.size} />
+          <BlobImage blob={page.rendered} alt={`Vista previa de la página ${number}`} className="page-preview__img" testId="page-preview" />
         </div>
 
         <fieldset className="segmented" disabled={busy}>

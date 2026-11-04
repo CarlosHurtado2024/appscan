@@ -1,17 +1,12 @@
-import { useEffect } from 'react';
+import { CropScreen } from './ui/screens/Crop';
 import { DocumentScreen } from './ui/screens/Document';
 import { LibraryScreen } from './ui/screens/Library';
+import { PageEditScreen } from './ui/screens/PageEdit';
 import { ToastProvider } from './ui/components/Toast';
 import { useRoute } from './ui/router';
 
 export function App() {
-  const route = useRoute();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [route.path]);
-
-  return <ToastProvider>{screenFor(route)}</ToastProvider>;
+  return <ToastProvider>{screenFor(useRoute())}</ToastProvider>;
 }
 
 function screenFor(route: ReturnType<typeof useRoute>) {
@@ -19,6 +14,10 @@ function screenFor(route: ReturnType<typeof useRoute>) {
   switch (section) {
     case 'doc':
       return <DocumentScreen key={id} id={id} />;
+    case 'page':
+      return <PageEditScreen key={id} id={id} />;
+    case 'crop':
+      return <CropScreen key={id} id={id} />;
     default:
       return <LibraryScreen />;
   }
