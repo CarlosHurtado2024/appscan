@@ -1,13 +1,33 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const THEME = '#23246b';
 
+// Only in production: the dev server relies on inline scripts and websockets for hot reload.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'wasm-unsafe-eval'",
+  "worker-src 'self'",
+  "connect-src 'self'",
+  "img-src 'self' blob: data:",
+  "media-src 'self' blob: mediastream:",
+  "style-src 'self' 'unsafe-inline'",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join('; ');
+
+const contentSecurityPolicy = (): Plugin => ({
+  name: 'appscan-csp',
+  apply: 'build',
+  transformIndexHtml: () => [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: CSP }, injectTo: 'head-prepend' }],
+});
+
 export default defineConfig({
   base: '/appscan/',
   plugins: [
     react(),
+    contentSecurityPolicy(),
     VitePWA({
       registerType: 'prompt',
       injectRegister: false,

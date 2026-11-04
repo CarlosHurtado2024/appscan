@@ -5,6 +5,7 @@ import { BlobImage } from '../components/BlobImage';
 import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
+import { InstallHint } from '../components/InstallHint';
 
 const NOTICE_KEY = 'appscan.backupNoticeDismissed';
 
@@ -75,6 +76,8 @@ export function LibraryScreen() {
       </header>
 
       <main className="screen__body">
+        <InstallHint />
+
         {hasDocs && (
           <label className="search">
             <Icon name="search" size={20} />

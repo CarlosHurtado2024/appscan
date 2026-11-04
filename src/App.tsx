@@ -6,10 +6,17 @@ import { MergeScreen } from './ui/screens/Merge';
 import { PageEditScreen } from './ui/screens/PageEdit';
 import { ScanScreen } from './ui/screens/Scan';
 import { ToastProvider } from './ui/components/Toast';
+import { UpdatePrompt } from './ui/components/UpdatePrompt';
+import { updateApp } from './ui/pwa';
 import { useRoute } from './ui/router';
 
 export function App() {
-  return <ToastProvider>{screenFor(useRoute())}</ToastProvider>;
+  return (
+    <ToastProvider>
+      <UpdatePrompt onUpdate={updateApp} />
+      {screenFor(useRoute())}
+    </ToastProvider>
+  );
 }
 
 function screenFor(route: ReturnType<typeof useRoute>) {
