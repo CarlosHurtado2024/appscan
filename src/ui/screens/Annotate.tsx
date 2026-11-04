@@ -3,6 +3,7 @@ import { renderPage } from '../../core/render';
 import type { Annotation, Box, Page, Point, Signature } from '../../core/types';
 import { SignatureInUseError, addSignature, deleteSignature, getPage, listSignatures } from '../../storage/db';
 import { BlobImage } from '../components/BlobImage';
+import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { SignaturePad } from '../components/SignaturePad';
 import { useToast } from '../components/Toast';
@@ -172,6 +173,7 @@ export function AnnotateScreen({ id }: { id: string }) {
   return (
     <div className="screen">
       <header className="toolbar">
+        <Guilloche />
         <a className="icon-btn" href={`#/page/${id}`} aria-label="Volver"><Icon name="back" /></a>
         <h1 className="toolbar__title">Anotar</h1>
         <button type="button" className="btn btn--primary btn--small" disabled={saving || !page} onClick={save}>

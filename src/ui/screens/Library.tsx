@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { Doc, Page } from '../../core/types';
-import { getPage, listDocs } from '../../storage/db';
-import { BlobImage } from '../components/BlobImage';
-import { Guilloche } from '../components/Guilloche';
+import type { Doc } from '../../core/types';
+import { listDocs } from '../../storage/db';
+import { DocThumb, serial } from '../components/DocThumb';
+import { Guilloche, Rosette } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
 import { InstallHint } from '../components/InstallHint';
@@ -26,24 +26,16 @@ function dismissNotice() {
   } catch { /* the notice simply returns next time */ }
 }
 
-export const serial = (id: string) => id.replace(/-/g, '').slice(0, 6).toUpperCase();
-
 const formatDate = (ms: number) =>
   new Date(ms).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
 
 function Stub({ doc }: { doc: Doc }) {
-  const [cover, setCover] = useState<Page>();
-  useEffect(() => {
-    if (doc.pageIds[0]) getPage(doc.pageIds[0]).then(setCover);
-  }, [doc.pageIds]);
   const count = doc.pageIds.length;
 
   return (
     <li>
       <a className="stub" data-testid="doc-stub" href={`#/doc/${doc.id}`}>
-        <span className="stub__thumb">
-          {cover && <BlobImage blob={cover.thumb} alt={`Primera página de ${doc.title}`} />}
-        </span>
+        <DocThumb doc={doc} />
         <span className="stub__body">
           <span className="stub__title">{doc.title}</span>
           <span className="stub__meta">
@@ -74,10 +66,15 @@ export function LibraryScreen() {
       <header className="masthead">
         <Guilloche active={sweeping} />
         <div className="masthead__row">
-          <h1 className="wordmark">AppScan</h1>
-          <a className="btn btn--small masthead__action" href="#/merge" aria-label="Unir documentos">Unir</a>
+          <div>
+            <h1 className="wordmark">AppScan</h1>
+            <p className="masthead__note">Tus documentos se quedan en este celular</p>
+          </div>
+          {(docs?.length ?? 0) >= 2 && <a className="btn btn--small" href="#/merge" aria-label="Unir documentos">Unir</a>}
         </div>
       </header>
+
+      <Rosette />
 
       <main className="screen__body">
         <InstallHint />
@@ -101,6 +98,14 @@ export function LibraryScreen() {
 
         {docs && !hasDocs && (
           <div className="empty">
+            <div className="stub stub--blank" aria-hidden="true">
+              <span className="stub__thumb"><span className="blank-sheet" /></span>
+              <span className="stub__body">
+                <span className="blank-line" />
+                <span className="blank-line blank-line--short" />
+                <span className="serial">N.º ······</span>
+              </span>
+            </div>
             <h2>Aún no tienes documentos</h2>
             <p>Pon una hoja sobre una mesa, toca <strong>Escanear</strong> y encuádrala. AppScan recorta y endereza la página por ti.</p>
             <p>Todo se queda en este celular. No hay cuentas ni servidores.</p>
@@ -121,7 +126,7 @@ export function LibraryScreen() {
         )}
       </main>
 
-      <footer className="action-bar">
+      <footer className="action-bar action-bar--lead">
         <a
           className="btn btn--primary btn--wide"
           href="#/scan"
@@ -134,7 +139,7 @@ export function LibraryScreen() {
         >
           <Icon name="scan" /> Escanear
         </a>
-        <ImportButton className="btn"><Icon name="gallery" /> Importar</ImportButton>
+        <ImportButton className="btn btn--square"><Icon name="gallery" /> Importar</ImportButton>
       </footer>
     </div>
   );

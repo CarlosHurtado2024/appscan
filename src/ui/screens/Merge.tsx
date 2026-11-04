@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import type { Doc } from '../../core/types';
 import { StorageFullError, listDocs, mergeDocs } from '../../storage/db';
+import { DocThumb, serial } from '../components/DocThumb';
+import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 import { navigate } from '../router';
@@ -36,6 +38,7 @@ export function MergeScreen() {
   return (
     <div className="screen">
       <header className="toolbar">
+        <Guilloche />
         <a className="icon-btn" href="#/" aria-label="Volver"><Icon name="back" /></a>
         <h1 className="toolbar__title">Unir documentos</h1>
       </header>
@@ -55,10 +58,14 @@ export function MergeScreen() {
                 const position = selected.indexOf(d.id);
                 return (
                   <li key={d.id}>
-                    <label className="merge-row">
+                    <label className="stub merge-row">
                       <input type="checkbox" checked={position >= 0} onChange={() => toggle(d.id)} aria-label={d.title} />
-                      <span className="merge-row__title">{position >= 0 ? `${position + 1}.º ` : ''}{d.title}</span>
-                      <span className="muted">{d.pageIds.length} {d.pageIds.length === 1 ? 'pág.' : 'págs.'}</span>
+                      <DocThumb doc={d} />
+                      <span className="stub__body">
+                        <span className="stub__title">{position >= 0 ? `${position + 1}.º ` : ''}{d.title}</span>
+                        <span className="stub__meta">{d.pageIds.length} {d.pageIds.length === 1 ? 'página' : 'páginas'}</span>
+                        <span className="serial">N.º {serial(d.id)}</span>
+                      </span>
                     </label>
                   </li>
                 );

@@ -6,6 +6,7 @@ import { vision } from '../../core/vision/client';
 import { getPage } from '../../storage/db';
 import { useBlobUrl } from '../components/BlobImage';
 import { CornerEditor } from '../components/CornerEditor';
+import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 import { editPage } from '../pageActions';
@@ -71,6 +72,7 @@ export function CropScreen({ id }: { id: string }) {
   return (
     <div className="screen">
       <header className="toolbar">
+        <Guilloche />
         <a className="icon-btn" href={`#/page/${id}`} aria-label="Volver"><Icon name="back" /></a>
         <h1 className="toolbar__title">Recortar</h1>
       </header>

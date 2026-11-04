@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Doc, FilterName, Page } from '../../core/types';
 import { StorageFullError, getDoc, getPage } from '../../storage/db';
 import { BlobImage } from '../components/BlobImage';
+import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { OcrPanel } from '../components/OcrPanel';
 import { useToast } from '../components/Toast';
@@ -57,6 +58,7 @@ export function PageEditScreen({ id }: { id: string }) {
   return (
     <div className="screen">
       <header className="toolbar">
+        <Guilloche />
         <a className="icon-btn" href={`#/doc/${page.docId}`} aria-label="Volver"><Icon name="back" /></a>
         <h1 className="toolbar__title">Página {number}</h1>
       </header>
@@ -66,7 +68,7 @@ export function PageEditScreen({ id }: { id: string }) {
           <BlobImage blob={page.rendered} alt={`Vista previa de la página ${number}`} className="page-preview__img" testId="page-preview" />
         </div>
 
-        <fieldset className="segmented" disabled={busy}>
+        <fieldset className="segmented segmented--grid" disabled={busy}>
           <legend>Filtro</legend>
           {FILTERS.map((f) => (
             <label key={f.value}>

@@ -66,5 +66,6 @@ Las decisiones de diseño están en [docs/superpowers/specs](docs/superpowers/sp
 - [pdf-lib](https://pdf-lib.js.org/) (MIT)
 - [idb](https://github.com/jakearchibald/idb) (ISC)
 - [React](https://react.dev/) (MIT)
+- [Libre Bodoni](https://github.com/impallari/Libre-Bodoni) y [Courier Prime](https://github.com/quoteunquoteapps/CourierPrime) (SIL Open Font License 1.1)
 
 AppScan es un proyecto independiente y no está afiliado a CamScanner ni a ninguna otra marca.

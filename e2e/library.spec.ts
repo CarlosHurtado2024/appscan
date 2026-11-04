@@ -18,6 +18,23 @@ test('Escanear opens the camera after its printed sweep', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Capturar' })).toBeVisible();
 });
 
+test('Unir is offered only with two or more documents', async ({ page }) => {
+  await expect(page.getByRole('link', { name: 'Unir documentos' })).toHaveCount(0);
+  await importAndOpen(page);
+  await backToLibrary(page);
+  await expect(page.getByRole('link', { name: 'Unir documentos' })).toHaveCount(0);
+  await importAndOpen(page);
+  await backToLibrary(page);
+  await expect(page.getByRole('link', { name: 'Unir documentos' })).toBeVisible();
+});
+
+test('the library keeps saying where documents live after the notice is dismissed', async ({ page }) => {
+  await importAndOpen(page);
+  await backToLibrary(page);
+  await page.getByRole('button', { name: 'Entendido' }).click();
+  await expect(page.getByText('Tus documentos se quedan en este celular')).toBeVisible();
+});
+
 test('importing an image creates a document with a thumbnail', async ({ page }) => {
   await importAndOpen(page);
   await backToLibrary(page);

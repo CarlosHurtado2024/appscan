@@ -51,7 +51,7 @@ export default defineConfig({
       },
       workbox: {
         // The app shell installs up front; the heavy engines are cached the first time they load.
-        globPatterns: ['**/*.{js,css,html,svg,png}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         globIgnores: ['**/opencv*', '**/ocr/**'],
         navigateFallback: 'index.html',
         runtimeCaching: [

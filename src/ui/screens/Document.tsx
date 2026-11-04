@@ -3,12 +3,13 @@ import type { Doc, Page } from '../../core/types';
 import { deleteDoc, deletePage, getDoc, getPages, renameDoc, reorderPages } from '../../storage/db';
 import { BlobImage } from '../components/BlobImage';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { serial } from '../components/DocThumb';
+import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
 import { useToast } from '../components/Toast';
 import { exportDoc } from '../exportDoc';
 import { navigate } from '../router';
-import { serial } from './Library';
 
 type Pending = { kind: 'page'; page: Page; index: number } | { kind: 'doc' };
 
@@ -94,6 +95,7 @@ export function DocumentScreen({ id }: { id: string }) {
   return (
     <div className="screen">
       <header className="toolbar">
+        <Guilloche />
         <a className="icon-btn" href="#/" aria-label="Volver"><Icon name="back" /></a>
         <input
           className="title-input"
@@ -143,7 +145,7 @@ export function DocumentScreen({ id }: { id: string }) {
         </div>
 
         {!isIdCard && (
-          <fieldset className="segmented">
+          <fieldset className="segmented segmented--grid">
             <legend>Tamaño del PDF</legend>
             <label><input type="radio" name="size" checked={pageSize === 'a4'} onChange={() => setPageSize('a4')} /><span>A4</span></label>
             <label><input type="radio" name="size" checked={pageSize === 'fit'} onChange={() => setPageSize('fit')} /><span>Ajustado a la imagen</span></label>
