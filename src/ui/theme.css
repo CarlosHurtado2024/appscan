@@ -227,3 +227,16 @@ input { font: inherit; color: inherit; caret-color: var(--primary); }
 .signature-choice img { max-height: 48px; margin-inline: auto; }
 .signature-pad { display: flex; flex-direction: column; gap: var(--space-3); }
 .signature-pad canvas { width: 100%; height: 160px; background: oklch(98.5% 0.006 295); border: 2px dashed var(--rule); border-radius: var(--radius); touch-action: none; }
+
+/* OCR */
+.ocr { display: flex; flex-direction: column; gap: var(--space-3); }
+.ocr__progress { display: flex; flex-direction: column; gap: var(--space-2); }
+.ocr__progress progress { width: 100%; height: 8px; }
+.ocr__text { flex: none; padding: var(--space-3); font: inherit; line-height: 1.5; resize: vertical; }
+
+/* Merge */
+.merge-list { display: flex; flex-direction: column; gap: var(--space-2); }
+.merge-row { display: flex; align-items: center; gap: var(--space-3); min-height: 56px; padding: var(--space-2) var(--space-3); background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer; }
+.merge-row:has(input:checked) { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.merge-row input { flex: none; width: 22px; height: 22px; }
+.merge-row__title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }

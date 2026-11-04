@@ -2,6 +2,7 @@ import { AnnotateScreen } from './ui/screens/Annotate';
 import { CropScreen } from './ui/screens/Crop';
 import { DocumentScreen } from './ui/screens/Document';
 import { LibraryScreen } from './ui/screens/Library';
+import { MergeScreen } from './ui/screens/Merge';
 import { PageEditScreen } from './ui/screens/PageEdit';
 import { ScanScreen } from './ui/screens/Scan';
 import { ToastProvider } from './ui/components/Toast';
@@ -20,6 +21,8 @@ function screenFor(route: ReturnType<typeof useRoute>) {
       return <PageEditScreen key={id} id={id} />;
     case 'crop':
       return <CropScreen key={id} id={id} />;
+    case 'merge':
+      return <MergeScreen />;
     case 'annotate':
       return <AnnotateScreen key={id} id={id} />;
     case 'scan':

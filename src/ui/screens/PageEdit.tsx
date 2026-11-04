@@ -3,6 +3,7 @@ import type { Doc, FilterName, Page } from '../../core/types';
 import { StorageFullError, getDoc, getPage } from '../../storage/db';
 import { BlobImage } from '../components/BlobImage';
 import { Icon } from '../components/Icon';
+import { OcrPanel } from '../components/OcrPanel';
 import { useToast } from '../components/Toast';
 import { editPage, rotatePage } from '../pageActions';
 
@@ -74,6 +75,8 @@ export function PageEditScreen({ id }: { id: string }) {
             </label>
           ))}
         </fieldset>
+
+        <OcrPanel page={page} onSaved={setPage} />
       </main>
 
       <footer className="action-bar action-bar--tools">
