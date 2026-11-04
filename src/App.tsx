@@ -1,3 +1,4 @@
+import { AnnotateScreen } from './ui/screens/Annotate';
 import { CropScreen } from './ui/screens/Crop';
 import { DocumentScreen } from './ui/screens/Document';
 import { LibraryScreen } from './ui/screens/Library';
@@ -19,6 +20,8 @@ function screenFor(route: ReturnType<typeof useRoute>) {
       return <PageEditScreen key={id} id={id} />;
     case 'crop':
       return <CropScreen key={id} id={id} />;
+    case 'annotate':
+      return <AnnotateScreen key={id} id={id} />;
     case 'scan':
       return (
         <ScanScreen

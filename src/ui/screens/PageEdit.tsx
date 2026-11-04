@@ -78,6 +78,7 @@ export function PageEditScreen({ id }: { id: string }) {
 
       <footer className="action-bar action-bar--tools">
         <a className="tool" href={`#/crop/${id}`}><Icon name="crop" /> Recortar</a>
+        <a className="tool" href={`#/annotate/${id}`}><Icon name="pen" /> Anotar</a>
         <button type="button" className="tool" disabled={busy} onClick={() => run(() => rotatePage(page))}><Icon name="rotate" /> Girar</button>
       </footer>
     </div>
