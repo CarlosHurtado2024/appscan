@@ -181,3 +181,25 @@ input { font: inherit; color: inherit; caret-color: var(--primary); }
 .crop-handle::after { content: ''; position: absolute; inset: 12px; background: var(--paper-raised); border: 3px solid oklch(45% 0.17 275); border-radius: 50%; box-shadow: var(--shadow); }
 .crop-lens { position: absolute; top: 8px; width: 112px; height: 112px; background-repeat: no-repeat; border: 2px solid var(--paper-raised); border-radius: 50%; box-shadow: var(--shadow); pointer-events: none; }
 .crop-lens::after { content: ''; position: absolute; inset: 50% auto auto 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border: 1px solid oklch(70% 0.17 275); border-radius: 50%; }
+
+/* Camera: always dark, in any theme; the scene is the viewfinder. */
+.camera { position: fixed; inset: 0; display: flex; flex-direction: column; background: oklch(12% 0.02 280); color: oklch(96% 0.01 295); }
+.camera__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.camera__overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.camera__overlay polygon { fill: oklch(70% 0.14 280 / 0.14); stroke: oklch(84% 0.1 280); stroke-width: 2; vector-effect: non-scaling-stroke; transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+.camera__top { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2); padding-top: calc(var(--space-2) + env(safe-area-inset-top)); background: oklch(12% 0.02 280 / 0.6); }
+.camera__step { font-weight: 650; }
+.camera__count { padding-inline: var(--space-2); font-size: 0.875rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.camera__card-guide { position: absolute; top: 50%; left: 50%; width: min(86vw, 520px); aspect-ratio: 85.6 / 54; transform: translate(-50%, -50%); border: 2px dashed oklch(90% 0.05 280); border-radius: 10px; pointer-events: none; }
+.camera__blocked { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-4); padding: var(--space-5); max-width: 32rem; margin-inline: auto; }
+.camera__blocked h1 { font-size: 1.375rem; font-weight: 700; text-wrap: balance; }
+.camera__blocked p { color: oklch(84% 0.02 295); }
+.camera__blocked .btn--primary { background: oklch(84% 0.09 280); border-color: oklch(84% 0.09 280); color: oklch(18% 0.05 280); cursor: pointer; }
+.camera__bottom { position: relative; z-index: 1; margin-top: auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-3); padding: var(--space-4); padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); background: oklch(12% 0.02 280 / 0.6); }
+.camera__side { justify-self: start; }
+.camera__bottom > a.camera__side, .camera__bottom > span.camera__side { justify-self: end; }
+.camera .btn { color: oklch(96% 0.01 295); background: oklch(28% 0.03 280 / 0.85); border-color: oklch(50% 0.04 280); }
+.camera .camera__blocked .btn--primary { background: oklch(84% 0.09 280); border-color: oklch(84% 0.09 280); color: oklch(18% 0.05 280); }
+.camera__shutter { width: 72px; height: 72px; padding: 0; background: oklch(96% 0.01 295); border: 5px solid oklch(12% 0.02 280); outline: 3px solid oklch(96% 0.01 295); border-radius: 50%; cursor: pointer; transition: transform var(--fast), opacity var(--fast); }
+.camera__shutter:active:not(:disabled) { transform: scale(0.92); }
+.camera__shutter:disabled { opacity: 0.45; cursor: default; }
