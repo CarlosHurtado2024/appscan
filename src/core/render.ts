@@ -14,13 +14,16 @@ export type RenderInput = Pick<Page, 'original' | 'corners' | 'rotation' | 'filt
 
 const isFull = (q: Quad) => JSON.stringify(q) === JSON.stringify(fullQuad());
 
-async function straighten(src: Raster, q: Quad): Promise<Raster> {
+async function straighten(src: Raster, q: Quad, reload: () => Promise<Raster>): Promise<Raster> {
   if (isFull(q)) return src;
   try {
     const m = EDGE_TRIM;
     return cropRaster(await vision.warp(src, q), { x: m, y: m, w: 1 - 2 * m, h: 1 - 2 * m });
   } catch (e) {
-    if (e instanceof VisionUnavailableError) return cropRaster(src, boundsOf(q));
+    if (e instanceof VisionUnavailableError) {
+      // The pixels were transferred; if the worker died holding them, they must be decoded again.
+      return cropRaster(src.data.buffer.byteLength > 0 ? src : await reload(), boundsOf(q));
+    }
     throw e;
   }
 }
@@ -68,7 +71,7 @@ async function drawAnnotations(
 
 async function renderAt(p: RenderInput, signatures: Map<string, Blob>, maxSide: number) {
   const src = await blobToRaster(p.original, maxSide);
-  const straight = await straighten(src, p.corners);
+  const straight = await straighten(src, p.corners, () => blobToRaster(p.original, maxSide));
   const filtered = await vision.filter(rotateRaster(straight, p.rotation), p.filter);
   const canvas = rasterToCanvas(filtered);
   const ctx = canvas.getContext('2d');

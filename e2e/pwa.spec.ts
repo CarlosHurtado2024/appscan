@@ -46,6 +46,28 @@ test('manifest has name, start_url, scope /appscan/, standalone display, 192 and
   }
 });
 
+test('OpenCV is cached as soon as the service worker is ready, even on a first visit', async ({ page, context }) => {
+  await disableSystemShare(page);
+  await page.goto('./');
+  await page.getByRole('heading', { name: 'AppScan' }).waitFor();
+  const cached = await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    for (const name of await caches.keys()) {
+      const keys = await (await caches.open(name)).keys();
+      if (keys.some((r) => /opencv/i.test(r.url))) return true;
+    }
+    return false;
+  });
+  expect(cached).toBe(true);
+  await context.setOffline(true);
+  await page.reload();
+  await page.getByTestId('import-input').setInputFiles(fixture('document.jpg'));
+  await page.getByRole('link', { name: 'Editar página 1' }).click();
+  await page.getByRole('link', { name: 'Recortar' }).click();
+  await page.getByTestId('handle-0').waitFor();
+  expect(Number(await page.getByTestId('handle-0').getAttribute('data-x'))).toBeGreaterThan(0.1);
+});
+
 test('service worker activates and controls the page after reload', async ({ page }) => {
   await installed(page);
 });

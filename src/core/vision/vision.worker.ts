@@ -7,7 +7,7 @@ import { loadCv, type Cv } from './loadCv';
 
 export type VisionRequest =
   | { id: number; op: 'load' }
-  | { id: number; op: 'detect'; raster: Raster }
+  | { id: number; op: 'detect'; raster: Raster; minCoverage?: number }
   | { id: number; op: 'warp'; raster: Raster; quad: Quad }
   | { id: number; op: 'filter'; raster: Raster; filter: FilterName };
 
@@ -24,7 +24,7 @@ async function handle(req: VisionRequest): Promise<VisionResponse> {
       await getCv();
       return { id: req.id, ok: true };
     case 'detect':
-      return { id: req.id, ok: true, quad: detectCorners(await getCv(), req.raster) };
+      return { id: req.id, ok: true, quad: detectCorners(await getCv(), req.raster, req.minCoverage) };
     case 'warp': {
       const size = outputSize(req.quad, req.raster.width, req.raster.height);
       return { id: req.id, ok: true, raster: warpPerspective(await getCv(), req.raster, req.quad, size) };

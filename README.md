@@ -32,7 +32,7 @@ Los documentos se guardan en el almacenamiento del navegador de tu celular y sol
 | Parte | Cuándo se descarga | Tamaño comprimido aproximado |
 |---|---|---|
 | App | Al abrirla por primera vez | 0,3 MB |
-| Detección de bordes (OpenCV) | Poco después de abrirla por primera vez | 3,5 MB |
+| Detección de bordes (OpenCV) | Al abrirla por primera vez | 3,5 MB |
 | Reconocimiento de texto | La primera vez que usas «Extraer texto» | 3,6 MB |
 
 ## Desarrollo

@@ -8,7 +8,8 @@ import { Guilloche } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
 import { useToast } from '../components/Toast';
-import { exportDoc } from '../exportDoc';
+import { sharePdf } from '../../core/share';
+import { buildDocPdf } from '../exportDoc';
 import { navigate } from '../router';
 
 type Pending = { kind: 'page'; page: Page; index: number } | { kind: 'doc' };
@@ -20,9 +21,11 @@ export function DocumentScreen({ id }: { id: string }) {
   const [pageSize, setPageSize] = useState<'a4' | 'fit'>('a4');
   const [pending, setPending] = useState<Pending | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [readyPdf, setReadyPdf] = useState<Uint8Array | null>(null);
   const toast = useToast();
 
   const reload = useCallback(async () => {
+    setReadyPdf(null);
     const d = (await getDoc(id)) ?? null;
     setDoc(d);
     setTitle((t) => t || d?.title || '');
@@ -69,13 +72,24 @@ export function DocumentScreen({ id }: { id: string }) {
     if (!doc) return;
     setExporting(true);
     try {
-      const result = await exportDoc({ ...doc, title: title.trim() || doc.title }, pages, pageSize);
+      const name = title.trim() || doc.title;
+      const bytes = await buildDocPdf(doc, pages, pageSize);
+      const result = await sharePdf(bytes, name);
+      if (result === 'blocked') setReadyPdf(bytes);
       if (result === 'downloaded') toast.show('PDF guardado en Descargas.');
     } catch {
       toast.show('No se pudo crear el PDF. Inténtalo de nuevo.');
     } finally {
       setExporting(false);
     }
+  }
+
+  async function shareReady() {
+    if (!readyPdf || !doc) return;
+    const bytes = readyPdf;
+    setReadyPdf(null);
+    const result = await sharePdf(bytes, title.trim() || doc.title, { retried: true });
+    if (result === 'downloaded') toast.show('PDF guardado en Descargas.');
   }
 
   if (doc === undefined) return <div className="screen" />;
@@ -154,9 +168,15 @@ export function DocumentScreen({ id }: { id: string }) {
       </main>
 
       <footer className="action-bar">
-        <button type="button" className="btn btn--primary btn--wide" disabled={exporting || pages.length === 0} onClick={onExport}>
-          <Icon name="share" /> {exporting ? 'Creando PDF…' : 'Compartir PDF'}
-        </button>
+        {readyPdf ? (
+          <button type="button" className="btn btn--primary btn--wide" onClick={shareReady}>
+            <Icon name="share" /> Compartir ahora
+          </button>
+        ) : (
+          <button type="button" className="btn btn--primary btn--wide" disabled={exporting || pages.length === 0} onClick={onExport}>
+            <Icon name="share" /> {exporting ? 'Creando PDF…' : 'Compartir PDF'}
+          </button>
+        )}
       </footer>
 
       {pending && (

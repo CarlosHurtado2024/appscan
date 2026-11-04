@@ -36,8 +36,22 @@ test('sharePdf downloads when files cannot be shared', async () => {
   expect(anchor.click).toHaveBeenCalled();
 });
 
-test('sharePdf downloads when sharing fails for another reason', async () => {
+test('sharePdf reports blocked, without downloading, when the browser wants a fresh tap', async () => {
   const share = vi.fn().mockRejectedValue(new DOMException('no', 'NotAllowedError'));
+  const anchor = stubBrowser({ canShare: () => true, share });
+  expect(await sharePdf(bytes, 'A')).toBe('blocked');
+  expect(anchor.click).not.toHaveBeenCalled();
+});
+
+test('after a fresh tap is also blocked, sharePdf falls back to downloading', async () => {
+  const share = vi.fn().mockRejectedValue(new DOMException('no', 'NotAllowedError'));
+  const anchor = stubBrowser({ canShare: () => true, share });
+  expect(await sharePdf(bytes, 'A', { retried: true })).toBe('downloaded');
+  expect(anchor.click).toHaveBeenCalled();
+});
+
+test('sharePdf downloads when sharing fails for another reason', async () => {
+  const share = vi.fn().mockRejectedValue(new DOMException('no', 'DataError'));
   const anchor = stubBrowser({ canShare: () => true, share });
   expect(await sharePdf(bytes, 'A')).toBe('downloaded');
   expect(anchor.click).toHaveBeenCalled();

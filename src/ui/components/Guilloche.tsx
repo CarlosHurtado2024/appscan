@@ -42,7 +42,7 @@ function rosettePaths(): string[] {
     let d = '';
     for (let i = 0; i <= 720; i++) {
       const t = (i / 720) * Math.PI * 2;
-      const radius = 62 + 34 * Math.cos(18 * t + offset * 18);
+      const radius = 62 + 34 * Math.cos(18 * t);
       d += `${i === 0 ? 'M' : 'L'}${(100 + radius * Math.cos(t + offset)).toFixed(1)} ${(100 + radius * Math.sin(t + offset)).toFixed(1)}`;
     }
     paths.push(`${d}Z`);

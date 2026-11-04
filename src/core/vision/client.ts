@@ -17,6 +17,9 @@ let nextId = 1;
 const pending = new Map<number, Pending>();
 let loaded: Promise<void> | null = null;
 
+/** A load that never finishes must not hold up scanning: manual crop is always available. */
+const LOAD_TIMEOUT_MS = 30_000;
+
 function failAll(message: string) {
   worker?.terminate();
   worker = null;
@@ -46,22 +49,30 @@ function send(req: NewRequest, transfer: Transferable[] = []): Promise<VisionRes
   });
 }
 
-/** Rejects before any pixels are handed over, so callers still own their raster and can fall back. */
+/**
+ * Rejects before any pixels are handed over, so callers still own their raster and can fall back.
+ * A failed import stays cached inside a worker, so retrying needs a new worker: failAll discards it.
+ */
 function ensureLoaded(): Promise<void> {
-  loaded ??= send({ op: 'load' }).then((r) => {
+  if (loaded) return loaded;
+  const timeout = new Promise<never>((_, reject) => {
+    window.setTimeout(() => reject(new VisionUnavailableError('OpenCV tardó demasiado en cargar.')), LOAD_TIMEOUT_MS);
+  });
+  const attempt = Promise.race([send({ op: 'load' }), timeout]).then((r) => {
     if (!r.ok) throw new VisionUnavailableError(r.error);
   });
-  loaded.catch(() => { loaded = null; });
-  return loaded;
+  loaded = attempt;
+  attempt.catch((e: Error) => failAll(e.message));
+  return attempt;
 }
 
 const buffer = (r: Raster) => r.data.buffer as ArrayBuffer;
 
 /** Each call takes ownership of the raster passed in; it must not be used afterward. */
 export const vision = {
-  async detect(raster: Raster): Promise<Quad | null> {
+  async detect(raster: Raster, minCoverage?: number): Promise<Quad | null> {
     await ensureLoaded();
-    const r = await send({ op: 'detect', raster }, [buffer(raster)]);
+    const r = await send({ op: 'detect', raster, minCoverage }, [buffer(raster)]);
     if (!r.ok) throw new VisionUnavailableError(r.error);
     return r.quad ?? null;
   },
@@ -69,7 +80,8 @@ export const vision = {
   async warp(raster: Raster, quad: Quad): Promise<Raster> {
     await ensureLoaded();
     const r = await send({ op: 'warp', raster, quad }, [buffer(raster)]);
-    if (!r.ok || !r.raster) throw new Error(r.ok ? 'Sin resultado' : r.error);
+    // Failing on a valid request almost always means the image did not fit in memory.
+    if (!r.ok || !r.raster) throw new RangeError(r.ok ? 'Sin resultado' : r.error);
     return r.raster;
   },
 
@@ -82,10 +94,5 @@ export const vision = {
       if (r.ok && r.raster) return r.raster;
     } catch { /* worker unavailable */ }
     return applyFilter(raster, filter);
-  },
-
-  /** Downloads OpenCV ahead of time so scanning works offline later. */
-  warmUp(): void {
-    ensureLoaded().catch(() => {});
   },
 };

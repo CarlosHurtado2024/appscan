@@ -25,13 +25,13 @@ export function ImportButton({ docId, className = 'btn', children, onDone }: Pro
       const { doc, failed } = await importFiles(files, docId);
       if (failed.length > 0) toast.show(`No se pudo abrir: ${failed.join(', ')}. Prueba con una foto JPG o PNG.`);
       if (doc && !docId) navigate(`/doc/${doc.id}`);
-      onDone?.();
     } catch (e) {
       toast.show(e instanceof StorageFullError
         ? 'El celular no tiene espacio. Borra algunos documentos e inténtalo de nuevo.'
         : 'No se pudo guardar la imagen. Inténtalo de nuevo.');
     } finally {
       setBusy(false);
+      onDone?.();
     }
   }
 

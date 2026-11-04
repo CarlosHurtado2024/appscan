@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
+import { fullQuad } from '../../core/geometry';
 import type { Doc } from '../../core/types';
 import { StorageFullError, createDoc, getDoc } from '../../storage/db';
 import { Icon } from '../components/Icon';
 import { useToast } from '../components/Toast';
 import { navigate } from '../router';
 import { useCamera } from '../useCamera';
-import { defaultTitle, importFiles, savePhoto } from '../useImport';
+import { ID_MIN_COVERAGE, defaultTitle, importFiles, savePhoto } from '../useImport';
 import { useLiveDetection } from '../useLiveDetection';
 
 type Props = { docId?: string; mode: 'normal' | 'id' };
@@ -45,7 +46,11 @@ export function ScanScreen({ docId, mode }: Props) {
       // Saved right away: closing the app afterwards never loses this page.
       const photo = await capture();
       const target = await ensureDoc();
-      setLastPageId((await savePhoto(photo, target.id)).id);
+      const page = await savePhoto(photo, target.id, isId ? { minCoverage: ID_MIN_COVERAGE } : {});
+      setLastPageId(page.id);
+      if (isId && JSON.stringify(page.corners) === JSON.stringify(fullQuad())) {
+        toast.show('No se encontró la tarjeta. Ajusta el recorte para que quede a tamaño real.');
+      }
       const total = count + 1;
       setCount(total);
       if (isId && total === ID_STEPS.length) navigate(`/doc/${target.id}`, { replace: true });
@@ -61,9 +66,13 @@ export function ScanScreen({ docId, mode }: Props) {
     if (files.length === 0) return;
     setSaving(true);
     try {
-      const { doc: saved, failed } = await importFiles(files, docId ?? doc?.id);
+      // ID mode keeps going until both sides exist, so the document stays a card sheet.
+      const target = isId ? await ensureDoc() : doc;
+      const { doc: saved, failed } = await importFiles(files, docId ?? target?.id, isId ? { minCoverage: ID_MIN_COVERAGE } : {});
       if (failed.length > 0) toast.show(`No se pudo abrir: ${failed.join(', ')}. Prueba con una foto JPG o PNG.`);
-      if (saved) navigate(`/doc/${saved.id}`, { replace: true });
+      const total = count + files.length - failed.length;
+      setCount(total);
+      if (saved && (!isId || total >= ID_STEPS.length)) navigate(`/doc/${saved.id}`, { replace: true });
     } catch (e) {
       reportSaveError(e);
     } finally {
@@ -107,7 +116,7 @@ export function ScanScreen({ docId, mode }: Props) {
         </div>
       )}
 
-      {lastPageId && !isId && !blocked && (
+      {lastPageId && !blocked && (
         <a className="btn btn--small camera__adjust" href={`#/crop/${lastPageId}`}><Icon name="crop" size={20} /> Ajustar recorte</a>
       )}
 

@@ -72,6 +72,15 @@ test('returns null when the largest shape covers under 20% of the frame', () => 
   expect(detectCorners(cv, scene({ w: 500, h: 500, quad: small, sheet: 235, table: 50 }))).toBeNull();
 });
 
+test('finds a card that fills only part of the frame when a lower minimum is given', () => {
+  const card: Quad = [P(0.15, 0.375), P(0.85, 0.375), P(0.85, 0.625), P(0.15, 0.625)];
+  const src = scene({ w: 390, h: 693, quad: card, sheet: 235, table: 50 });
+  expect(detectCorners(cv, src)).toBeNull();
+  const found = detectCorners(cv, src, 0.08);
+  expect(found).not.toBeNull();
+  expect(maxError(found!, card, 390, 693)).toBeLessThan(0.03);
+});
+
 test('warp rectifies a known quad: output corners match the sheet color', () => {
   const src = scene({ w: 800, h: 1000, quad: QUAD, sheet: 235, table: 50, noise: 0 });
   const out = warpPerspective(cv, src, QUAD, { width: 400, height: 500 });

@@ -1,5 +1,4 @@
 import { buildIdCardSheet, buildPdf, type PdfImage } from '../core/pdf';
-import { sharePdf } from '../core/share';
 import type { Doc, Page } from '../core/types';
 
 async function toPdfImage(page: Page): Promise<PdfImage> {
@@ -13,10 +12,11 @@ async function toPdfImage(page: Page): Promise<PdfImage> {
   return image;
 }
 
-export async function exportDoc(doc: Doc, pages: Page[], pageSize: 'a4' | 'fit') {
-  const images = await Promise.all(pages.map(toPdfImage));
-  const bytes = doc.kind === 'id-card' && images.length === 2
-    ? await buildIdCardSheet(images[0], images[1])
-    : await buildPdf(images, { pageSize });
-  return sharePdf(bytes, doc.title);
+/** One page at a time: a phone cannot hold twenty decoded photos in memory at once. */
+export async function buildDocPdf(doc: Doc, pages: Page[], pageSize: 'a4' | 'fit'): Promise<Uint8Array> {
+  const images: PdfImage[] = [];
+  for (const page of pages) images.push(await toPdfImage(page));
+  return doc.kind === 'id-card' && images.length === 2
+    ? buildIdCardSheet(images[0], images[1])
+    : buildPdf(images, { pageSize });
 }

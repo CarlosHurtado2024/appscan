@@ -50,16 +50,13 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // The app shell installs up front; the heavy engines are cached the first time they load.
+        // OpenCV installs with the app, so scanning works offline after the first visit, however slow it was.
+        // OCR is optional and only cached the first time it is used.
+        maximumFileSizeToCacheInBytes: 16 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        globIgnores: ['**/opencv*', '**/ocr/**'],
+        globIgnores: ['**/ocr/**'],
         navigateFallback: 'index.html',
         runtimeCaching: [
-          {
-            urlPattern: /\/assets\/opencv.*\.js$/,
-            handler: 'CacheFirst',
-            options: { cacheName: 'appscan-opencv', cacheableResponse: { statuses: [200] } },
-          },
           {
             urlPattern: /\/ocr\//,
             handler: 'CacheFirst',

@@ -27,14 +27,14 @@ function hugsFrame(q: Quad): boolean {
 }
 
 /** Finds the largest convex four-sided outline in a binary image, in that image's relative coordinates. */
-function largestQuad(cv: Cv, binary: Cv, width: number, height: number): Quad | null {
+function largestQuad(cv: Cv, binary: Cv, width: number, height: number, minCoverage: number): Quad | null {
   return scoped((track) => {
     const contours = track(new cv.MatVector());
     const hierarchy = track(new cv.Mat());
     cv.findContours(binary, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
     let best: Quad | null = null;
-    let bestArea = MIN_COVERAGE * width * height;
+    let bestArea = minCoverage * width * height;
     for (let i = 0; i < contours.size(); i++) {
       const contour = track(contours.get(i));
       const area = cv.contourArea(contour);
@@ -60,7 +60,7 @@ function largestQuad(cv: Cv, binary: Cv, width: number, height: number): Quad | 
   });
 }
 
-export function detectCorners(cv: Cv, src: Raster): Quad | null {
+export function detectCorners(cv: Cv, src: Raster, minCoverage = MIN_COVERAGE): Quad | null {
   return scoped((track) => {
     const rgba = track(cv.matFromArray(src.height, src.width, cv.CV_8UC4, []));
     rgba.data.set(src.data);
@@ -77,12 +77,12 @@ export function detectCorners(cv: Cv, src: Raster): Quad | null {
     const kernel = track(cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3)));
     const dilated = track(new cv.Mat());
     cv.dilate(edges, dilated, kernel);
-    const fromEdges = largestQuad(cv, dilated, small.cols, small.rows);
+    const fromEdges = largestQuad(cv, dilated, small.cols, small.rows, minCoverage);
     if (fromEdges) return fromEdges;
 
     const otsu = track(new cv.Mat());
     cv.threshold(blurred, otsu, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
-    return largestQuad(cv, otsu, small.cols, small.rows);
+    return largestQuad(cv, otsu, small.cols, small.rows, minCoverage);
   });
 }
 

@@ -39,6 +39,7 @@ export function CropScreen({ id }: { id: string }) {
   async function detect(original: Blob, apply: (q: Quad) => void) {
     try {
       apply((await vision.detect(await blobToRaster(original, DETECT_SIDE))) ?? fullQuad());
+      setVisionOff(false);
     } catch {
       setVisionOff(true);
     }

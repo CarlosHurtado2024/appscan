@@ -1,6 +1,6 @@
 import { PDFDocument } from 'pdf-lib';
 import sharp from 'sharp';
-import { buildIdCardSheet, buildPdf, idCardLayout, safeFilename, type PdfImage } from './pdf';
+import { buildIdCardSheet, buildPdf, fitInside, idCardLayout, safeFilename, type PdfImage } from './pdf';
 
 async function jpeg(width: number, height: number): Promise<PdfImage> {
   const buf = await sharp({ create: { width, height, channels: 3, background: { r: 240, g: 240, b: 240 } } }).jpeg().toBuffer();
@@ -44,6 +44,14 @@ test('idCardLayout sizes are 242.65 x 153.07 points, centred, not overlapping', 
   }
   const top = Math.max(front.y, back.y), bottom = Math.min(front.y, back.y);
   expect(top).toBeGreaterThanOrEqual(bottom + front.h);
+});
+
+test('a photo that is not card-shaped fits inside the card box without stretching', () => {
+  const box = { x: 10, y: 20, w: 242.65, h: 153.07 };
+  const r = fitInside({ width: 900, height: 1600 }, box);
+  expect(r.w / r.h).toBeCloseTo(900 / 1600, 3);
+  expect(r.h).toBeCloseTo(153.07, 1);
+  expect(r.x + r.w / 2).toBeCloseTo(box.x + box.w / 2, 3);
 });
 
 test('buildIdCardSheet returns one A4 page', async () => {

@@ -14,10 +14,11 @@ async function draw(pdf: PDFDocument, page: PDFPage, img: PdfImage, box: Box) {
   page.drawImage(embedded, { x: box.x, y: box.y, width: box.w, height: box.h });
 }
 
-function contain(img: PdfImage, pageW: number, pageH: number): Box {
-  const scale = Math.min(pageW / img.width, pageH / img.height);
+/** The largest placement of an image inside a box that keeps its proportions, centred. */
+export function fitInside(img: { width: number; height: number }, box: Box): Box {
+  const scale = Math.min(box.w / img.width, box.h / img.height);
   const w = img.width * scale, h = img.height * scale;
-  return { x: (pageW - w) / 2, y: (pageH - h) / 2, w, h };
+  return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h };
 }
 
 export async function buildPdf(images: PdfImage[], opts: { pageSize: 'a4' | 'fit' }): Promise<Uint8Array> {
@@ -33,7 +34,7 @@ export async function buildPdf(images: PdfImage[], opts: { pageSize: 'a4' | 'fit
       w = landscape ? A4.long : A4.short;
       h = landscape ? A4.short : A4.long;
     }
-    await draw(pdf, pdf.addPage([w, h]), img, contain(img, w, h));
+    await draw(pdf, pdf.addPage([w, h]), img, fitInside(img, { x: 0, y: 0, w, h }));
   }
   return pdf.save();
 }
@@ -53,8 +54,8 @@ export async function buildIdCardSheet(front: PdfImage, back: PdfImage): Promise
   const pdf = await PDFDocument.create();
   const page = pdf.addPage([A4.short, A4.long]);
   const layout = idCardLayout();
-  await draw(pdf, page, front, layout.front);
-  await draw(pdf, page, back, layout.back);
+  await draw(pdf, page, front, fitInside(front, layout.front));
+  await draw(pdf, page, back, fitInside(back, layout.back));
   return pdf.save();
 }
 

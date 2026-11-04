@@ -23,7 +23,7 @@ function fit(w: number, h: number, maxSide: number) {
   return { width: Math.max(1, Math.round(w * scale)), height: Math.max(1, Math.round(h * scale)) };
 }
 
-function drawn(bitmap: ImageBitmap, maxSide: number) {
+function drawn(bitmap: CanvasImageSource & { width: number; height: number }, maxSide: number) {
   const { width, height } = fit(bitmap.width, bitmap.height, maxSide);
   const canvas = new OffscreenCanvas(width, height);
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -35,12 +35,20 @@ function drawn(bitmap: ImageBitmap, maxSide: number) {
 
 /** Bakes in EXIF orientation and the size limit, so everything downstream can ignore them. */
 export async function normalizeImage(file: Blob): Promise<{ blob: Blob; width: number; height: number }> {
-  const bitmap = await decode(file);
+  const url = URL.createObjectURL(file);
   try {
-    const { canvas, width, height } = drawn(bitmap, MAX_ORIGINAL_SIDE);
+    const img = new Image();
+    img.src = url;
+    try {
+      await img.decode();
+    } catch {
+      throw new UnsupportedImageError();
+    }
+    const source = Object.assign(img, { width: img.naturalWidth, height: img.naturalHeight });
+    const { canvas, width, height } = drawn(source, MAX_ORIGINAL_SIDE);
     return { blob: await canvas.convertToBlob({ type: 'image/jpeg', quality: 0.92 }), width, height };
   } finally {
-    bitmap.close();
+    URL.revokeObjectURL(url);
   }
 }
 

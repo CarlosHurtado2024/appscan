@@ -20,9 +20,12 @@ export async function editPage(page: Page, patch: Partial<PageInput>): Promise<P
   return updatePage(page.id, { ...patch, ...output });
 }
 
-export function rotatePage(page: Page): Promise<Page> {
+export async function rotatePage(page: Page): Promise<Page> {
+  const bitmap = await createImageBitmap(page.rendered);
+  const aspect = bitmap.width / bitmap.height;
+  bitmap.close();
   return editPage(page, {
     rotation: ((page.rotation + 90) % 360) as Rotation,
-    annotations: rotateAnnotations(page.annotations, 90),
+    annotations: rotateAnnotations(page.annotations, 90, aspect),
   });
 }

@@ -74,7 +74,7 @@ export function LibraryScreen() {
         </div>
       </header>
 
-      <Rosette />
+      {docs && !hasDocs && <Rosette />}
 
       <main className="screen__body">
         <InstallHint />
@@ -90,7 +90,7 @@ export function LibraryScreen() {
           <aside className="notice">
             <div>
               <strong>Sin copia de seguridad</strong>
-              <p>Tus documentos solo están en este celular. Si borras los datos del navegador o lo pierdes, se pierden. Comparte los PDF importantes.</p>
+              <p>Si borras los datos del navegador o pierdes el celular, se pierden tus documentos. Comparte los PDF importantes.</p>
             </div>
             <button type="button" className="btn btn--small" onClick={() => { dismissNotice(); setNoticeDismissed(true); }}>Entendido</button>
           </aside>
@@ -108,7 +108,7 @@ export function LibraryScreen() {
             </div>
             <h2>Aún no tienes documentos</h2>
             <p>Pon una hoja sobre una mesa, toca <strong>Escanear</strong> y encuádrala. AppScan recorta y endereza la página por ti.</p>
-            <p>Todo se queda en este celular. No hay cuentas ni servidores.</p>
+            <p>No hay cuentas ni servidores.</p>
             <a className="text-link" href="#/scan?mode=id"><Icon name="card" size={20} /> Escanear una cédula</a>
           </div>
         )}
