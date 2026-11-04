@@ -39,4 +39,23 @@ Servida con `vite preview` en `http://localhost:4173/appscan/`, en Chrome 156 si
 
 ## 3. Sitio publicado
 
-Pendiente de publicar.
+Publicado en Vercel, en `https://appscan-alpha.vercel.app/`. Chrome 156 sin interfaz, con pantalla de 390 × 844.
+
+### Observado con REA
+
+- **Evidence:** `ev_f666c3e0727793e88dd4ddf04ed96e9e94092111e737582012a9391bcb703b3e` (captura completa, 96 eventos, ninguno descartado).
+- REA abrió la app, esperó, la volvió a abrir y esperó de nuevo. Los seis pasos terminaron.
+- Hubo 32 peticiones, todas al mismo origen: 27 con respuesta 200 y 5 con 304. Ninguna falló.
+- El service worker y OpenCV se descargaron durante la instalación.
+- Sin errores de página ni avisos de consola. Cookies, `localStorage` y `sessionStorage` quedaron vacíos.
+
+### Observado con Playwright sobre el mismo sitio
+
+- Con una foto real del conjunto de pruebas, el OCR reconoció «Factura número 1234».
+- Sin conexión, la app abrió, importó una imagen, generó el PDF y detectó las esquinas.
+- Ninguna respuesta dio error, no hubo peticiones a otros dominios ni avisos de la política de seguridad de contenido.
+
+### Límites
+
+- Solo se usó Chrome de escritorio con pantalla de celular. No se probó en un celular real ni en Safari.
+- La cámara real, la instalación y el menú de compartir del sistema siguen sin verificar.
