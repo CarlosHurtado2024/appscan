@@ -2,7 +2,7 @@
 
 Escanea documentos con tu celular y conviértelos en PDF. Todo se queda en tu dispositivo: sin cuentas, sin servidores y sin subir imágenes.
 
-**Abrir la app:** https://carloshurtado2024.github.io/appscan/
+**Abrir la app:** https://appscan-alpha.vercel.app/
 
 ## Funciones
 
@@ -55,7 +55,7 @@ npm test
 npx playwright test
 ```
 
-Las pruebas de navegador usan el Chrome instalado en tu equipo. Al subir a `main`, GitHub Actions ejecuta las pruebas unitarias y publica en GitHub Pages. Las pruebas de navegador se ejecutan solo en local.
+Las pruebas de navegador usan el Chrome instalado en tu equipo. Al subir a `main`, Vercel publica la app. GitHub Actions ejecuta las pruebas unitarias. Las pruebas de navegador se ejecutan solo en local.
 
 Las decisiones de diseño están en [docs/superpowers/specs](docs/superpowers/specs/2026-11-03-appscan-pwa-design.md), y la auditoría con [REA](https://github.com/morluto/rea) en [docs/rea-audit.md](docs/rea-audit.md).
 

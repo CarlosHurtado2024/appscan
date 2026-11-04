@@ -1,8 +1,10 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { deployBase } from './src/deployBase';
 
 const THEME = '#23246b';
+const BASE = deployBase(process.env);
 
 // Only in production: the dev server relies on inline scripts and websockets for hot reload.
 const CSP = [
@@ -24,7 +26,7 @@ const contentSecurityPolicy = (): Plugin => ({
 });
 
 export default defineConfig({
-  base: '/appscan/',
+  base: BASE,
   plugins: [
     react(),
     contentSecurityPolicy(),
@@ -37,8 +39,8 @@ export default defineConfig({
         short_name: 'AppScan',
         description: 'Escanea documentos con tu celular. Todo se queda en tu dispositivo.',
         lang: 'es',
-        start_url: '/appscan/',
-        scope: '/appscan/',
+        start_url: BASE,
+        scope: BASE,
         display: 'standalone',
         orientation: 'portrait',
         theme_color: THEME,
