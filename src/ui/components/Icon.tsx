@@ -20,6 +20,8 @@ const PATHS = {
   plus: 'M12 5v14M5 12h14',
   gallery: 'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm-1 11 5-5 4 4 3-3 6 6',
   signature: 'M3 17c3-1 5-8 7-8s0 8 2 8 2-4 4-4 1 3 5 3M3 21h18',
+  download: 'M12 4v11m0 0-4-4m4 4 4-4M5 20h14',
+  menu: 'M12 5h.01M12 12h.01M12 19h.01',
   scan: 'M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M4 12h16',
 } as const;
 

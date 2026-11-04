@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import type { Doc } from '../../core/types';
 import { listDocs } from '../../storage/db';
+import { AppMark } from '../components/AppMark';
 import { DocThumb, serial } from '../components/DocThumb';
 import { Guilloche, Rosette } from '../components/Guilloche';
 import { Icon } from '../components/Icon';
 import { ImportButton } from '../components/ImportButton';
-import { InstallHint } from '../components/InstallHint';
+import { InstallSheet } from '../components/InstallSheet';
+import { relativeDay } from '../format';
 import { navigate } from '../router';
+import { useInstall } from '../useInstall';
 
 /** The line work prints across the band, then the camera opens. */
 const SWEEP_MS = 240;
@@ -26,9 +29,6 @@ function dismissNotice() {
   } catch { /* the notice simply returns next time */ }
 }
 
-const formatDate = (ms: number) =>
-  new Date(ms).toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
-
 function Stub({ doc }: { doc: Doc }) {
   const count = doc.pageIds.length;
 
@@ -39,7 +39,7 @@ function Stub({ doc }: { doc: Doc }) {
         <span className="stub__body">
           <span className="stub__title">{doc.title}</span>
           <span className="stub__meta">
-            {count} {count === 1 ? 'página' : 'páginas'} · {formatDate(doc.updatedAt)}
+            {count} {count === 1 ? 'página' : 'páginas'} · {relativeDay(doc.updatedAt)}
           </span>
           <span className="serial">N.º {serial(doc.id)}</span>
         </span>
@@ -53,6 +53,7 @@ export function LibraryScreen() {
   const [query, setQuery] = useState('');
   const [noticeDismissed, setNoticeDismissed] = useState(readNoticeDismissed);
   const [sweeping, setSweeping] = useState(false);
+  const { kind, offerOpen, openOffer, closeOffer, install } = useInstall();
 
   useEffect(() => {
     listDocs().then(setDocs);
@@ -66,7 +67,8 @@ export function LibraryScreen() {
       <header className="masthead">
         <Guilloche active={sweeping} />
         <div className="masthead__row">
-          <div>
+          <AppMark size={44} />
+          <div className="masthead__name">
             <h1 className="wordmark">AppScan</h1>
             <p className="masthead__note">Tus documentos se quedan en este celular</p>
           </div>
@@ -77,23 +79,11 @@ export function LibraryScreen() {
       {docs && !hasDocs && <Rosette />}
 
       <main className="screen__body">
-        <InstallHint />
-
         {hasDocs && (
           <label className="search">
             <Icon name="search" size={20} />
             <input type="search" placeholder="Buscar por título" aria-label="Buscar por título" value={query} onChange={(e) => setQuery(e.target.value)} />
           </label>
-        )}
-
-        {hasDocs && !noticeDismissed && (
-          <aside className="notice">
-            <div>
-              <strong>Sin copia de seguridad</strong>
-              <p>Si borras los datos del navegador o pierdes el celular, se pierden tus documentos. Comparte los PDF importantes.</p>
-            </div>
-            <button type="button" className="btn btn--small" onClick={() => { dismissNotice(); setNoticeDismissed(true); }}>Entendido</button>
-          </aside>
         )}
 
         {docs && !hasDocs && (
@@ -109,7 +99,6 @@ export function LibraryScreen() {
             <h2>Aún no tienes documentos</h2>
             <p>Pon una hoja sobre una mesa, toca <strong>Escanear</strong> y encuádrala. AppScan recorta y endereza la página por ti.</p>
             <p>No hay cuentas ni servidores.</p>
-            <a className="text-link" href="#/scan?mode=id"><Icon name="card" size={20} /> Escanear una cédula</a>
           </div>
         )}
 
@@ -121,10 +110,24 @@ export function LibraryScreen() {
           </ul>
         )}
 
-        {hasDocs && (
-          <a className="text-link" href="#/scan?mode=id"><Icon name="card" size={20} /> Escanear una cédula</a>
+        {hasDocs && !noticeDismissed && (
+          <aside className="notice">
+            <div>
+              <strong>Sin copia de seguridad</strong>
+              <p>Si borras los datos del navegador o pierdes el celular, se pierden tus documentos. Comparte los PDF importantes.</p>
+            </div>
+            <button type="button" className="btn btn--small" onClick={() => { dismissNotice(); setNoticeDismissed(true); }}>Entendido</button>
+          </aside>
+        )}
+
+        {kind !== 'none' && !offerOpen && (
+          <button type="button" className="text-link" onClick={openOffer}>
+            <Icon name="download" size={20} /> Instalar AppScan en este celular
+          </button>
         )}
       </main>
+
+      {kind !== 'none' && offerOpen && <InstallSheet kind={kind} onInstall={install} onClose={closeOffer} />}
 
       <footer className="action-bar action-bar--lead">
         <a
@@ -139,6 +142,7 @@ export function LibraryScreen() {
         >
           <Icon name="scan" /> Escanear
         </a>
+        <a className="btn btn--square" href="#/scan?mode=id"><Icon name="card" /> Cédula</a>
         <ImportButton className="btn btn--square"><Icon name="gallery" /> Importar</ImportButton>
       </footer>
     </div>

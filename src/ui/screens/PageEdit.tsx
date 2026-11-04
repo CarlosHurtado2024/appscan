@@ -65,10 +65,11 @@ export function PageEditScreen({ id }: { id: string }) {
 
       <main className="screen__body page-edit">
         <div className={busy ? 'page-preview page-preview--busy' : 'page-preview'} aria-busy={busy}>
+          {busy && <span className="busy-pill" role="status">Aplicando…</span>}
           <BlobImage blob={page.rendered} alt={`Vista previa de la página ${number}`} className="page-preview__img" testId="page-preview" />
         </div>
 
-        <fieldset className="segmented segmented--grid" disabled={busy}>
+        <fieldset className="segmented segmented--four" disabled={busy}>
           <legend>Filtro</legend>
           {FILTERS.map((f) => (
             <label key={f.value}>

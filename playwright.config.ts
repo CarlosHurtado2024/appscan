@@ -9,6 +9,11 @@ const mobile = {
   acceptDownloads: true,
 };
 
+const offerAnswered = (origin: string) => ({
+  cookies: [],
+  origins: [{ origin, localStorage: [{ name: 'appscan.installOffered', value: '1' }] }],
+});
+
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: false,
@@ -22,13 +27,14 @@ export default defineConfig({
       use: {
         ...mobile,
         baseURL: 'http://localhost:5173/appscan/',
+        storageState: offerAnswered('http://localhost:5173'),
         launchOptions: { args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] },
       },
     },
     {
       name: 'pwa',
       testMatch: /pwa\.spec/,
-      use: { ...mobile, baseURL: 'http://localhost:4173/appscan/' },
+      use: { ...mobile, baseURL: 'http://localhost:4173/appscan/', storageState: offerAnswered('http://localhost:4173') },
     },
   ],
   webServer: [

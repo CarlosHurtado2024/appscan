@@ -13,7 +13,7 @@ export const ID_MIN_COVERAGE = 0.08;
 type DetectOptions = { minCoverage?: number };
 
 export function defaultTitle(now = new Date()): string {
-  const date = now.toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric' });
+  const date = now.toLocaleDateString('es', { day: 'numeric', month: 'short' });
   const time = now.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
   return `Documento ${date} ${time}`;
 }

@@ -18,7 +18,7 @@ Escanea documentos con tu celular y conviértelos en PDF. Todo se queda en tu di
 
 ## Instalar en el celular
 
-- **Android (Chrome):** abre el enlace, toca el menú ⋮ y elige «Instalar app» o «Agregar a la pantalla principal».
+- **Android (Chrome):** abre el enlace y toca **Instalar app** en el aviso que aparece. Si no aparece, usa el menú ⋮ y elige «Agregar a la pantalla principal».
 - **iPhone (Safari):** abre el enlace, toca Compartir y elige «Agregar a inicio». Usa siempre la app desde ese icono: iOS puede borrar los datos de los sitios que no están instalados.
 
 ## Privacidad y copias de seguridad

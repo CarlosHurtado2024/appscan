@@ -35,6 +35,25 @@ test('the library keeps saying where documents live after the notice is dismisse
   await expect(page.getByText('Tus documentos se quedan en este celular')).toBeVisible();
 });
 
+test('Cédula is a main action that opens ID mode', async ({ page }) => {
+  await page.getByRole('link', { name: 'Cédula' }).click();
+  await expect(page.getByText('Cara frontal')).toBeVisible();
+});
+
+test('the backup notice sits below the documents', async ({ page }) => {
+  await importAndOpen(page);
+  await backToLibrary(page);
+  const stub = (await page.getByTestId('doc-stub').boundingBox())!;
+  const notice = (await page.getByText('Sin copia de seguridad').boundingBox())!;
+  expect(notice.y).toBeGreaterThan(stub.y + stub.height - 1);
+});
+
+test('the date is not repeated: a new document says when in words', async ({ page }) => {
+  await importAndOpen(page);
+  await backToLibrary(page);
+  await expect(page.getByTestId('doc-stub')).toContainText('1 página · hoy');
+});
+
 test('importing an image creates a document with a thumbnail', async ({ page }) => {
   await importAndOpen(page);
   await backToLibrary(page);

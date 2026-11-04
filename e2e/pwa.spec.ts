@@ -40,7 +40,9 @@ test('manifest has name, start_url, scope /appscan/, standalone display, 192 and
   expect(manifest.display).toBe('standalone');
   const sizes = manifest.icons.map((i: { sizes: string }) => i.sizes);
   expect(sizes).toEqual(expect.arrayContaining(['192x192', '512x512']));
-  expect(manifest.icons.some((i: { purpose?: string }) => i.purpose === 'maskable')).toBe(true);
+  const maskable = manifest.icons.filter((i: { purpose?: string }) => i.purpose === 'maskable');
+  expect(maskable.map((i: { sizes: string }) => i.sizes)).toEqual(expect.arrayContaining(['192x192', '512x512']));
+  expect(maskable[0].src).not.toBe(manifest.icons.find((i: { purpose?: string }) => i.purpose !== 'maskable').src);
   for (const icon of manifest.icons) {
     expect((await request.get(new URL(icon.src, page.url()).href)).status()).toBe(200);
   }
@@ -140,18 +142,3 @@ test('the update prompt appears on a new version and does not reload by itself',
   expect(navigations).toBe(0);
 });
 
-test('the iPhone hint explains how to install, once dismissed it stays away', async ({ browser }) => {
-  const context = await browser.newContext({
-    baseURL: 'http://localhost:4173/appscan/',
-    viewport: { width: 390, height: 844 },
-    userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-  });
-  const page = await context.newPage();
-  await page.goto('./');
-  await expect(page.getByText('Agregar a inicio')).toBeVisible();
-  await page.getByRole('button', { name: 'Ocultar' }).click();
-  await page.reload();
-  await page.getByRole('heading', { name: 'AppScan' }).waitFor();
-  await expect(page.getByText('Agregar a inicio')).toHaveCount(0);
-  await context.close();
-});
